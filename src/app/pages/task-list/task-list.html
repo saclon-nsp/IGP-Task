@@ -1,0 +1,49 @@
+<div class="page">
+  <div class="header">
+    <h2>Task Manager</h2>
+    <a routerLink="/add" class="btn primary">+ Add Task</a>
+  </div>
+
+  <div class="filters">
+    <input
+      type="text"
+      [formControl]="searchControl"
+      placeholder="Search by title"
+      class="input"
+    />
+
+    <select [formControl]="filterControl" class="select">
+      <option *ngFor="let status of statuses" [value]="status">
+        {{ status }}
+      </option>
+    </select>
+  </div>
+
+  <div *ngIf="loading$ | async" class="state loading">
+    Loading tasks...
+  </div>
+
+  <div *ngIf="error$ | async as error" class="state error">
+    {{ error }}
+  </div>
+
+  <div class="task-list" *ngIf="!(loading$ | async)">
+    <div class="task-card" *ngFor="let task of tasks$ | async; trackBy: trackByTaskId">
+      <div class="task-info">
+        <h3>{{ task.title }}</h3>
+        <span class="badge" [ngClass]="{
+          'pending': task.status === 'Pending',
+          'progress': task.status === 'In Progress',
+          'completed': task.status === 'Completed'
+        }">
+          {{ task.status }}
+        </span>
+      </div>
+
+      <div class="actions">
+        <button class="btn edit" (click)="onEdit(task)">Edit</button>
+        <button class="btn delete" (click)="onDelete(task.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

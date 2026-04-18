@@ -1,0 +1,16 @@
+/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #f5f7fb;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}

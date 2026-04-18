@@ -1,0 +1,57 @@
+.form-page {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.form-card {
+  background: #fff;
+  border: 1px solid #e3e3e3;
+  border-radius: 12px;
+  padding: 25px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.error small {
+  color: #dc3545;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn {
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.primary {
+  background-color: #1976d2;
+  color: white;
+}
+
+.cancel {
+  background-color: #6c757d;
+  color: white;
+}
