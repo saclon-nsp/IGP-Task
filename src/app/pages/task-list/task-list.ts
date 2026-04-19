@@ -36,11 +36,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.loading$ = this.taskService.loading$;
     this.error$ = this.taskService.error$;
 
-    this.taskService.getTasks().subscribe();
-
     this.searchControl.valueChanges
       .pipe(
-        debounceTime(400),
+        debounceTime(300),
         distinctUntilChanged(),
         takeUntil(this.destroy$)
       )
@@ -55,15 +53,16 @@ export class TaskListComponent implements OnInit, OnDestroy {
       });
   }
 
+  onAddTask(): void {
+    this.router.navigate(['/add']);
+  }
+
   onEdit(task: Task): void {
     this.router.navigate(['/edit', task.id]);
   }
 
   onDelete(id: number): void {
-    const isConfirmed = confirm('Are you sure you want to delete this task?');
-    if (isConfirmed) {
-      this.taskService.deleteTask(id);
-    }
+    this.taskService.deleteTask(id).subscribe();
   }
 
   trackByTaskId(index: number, task: Task): number {

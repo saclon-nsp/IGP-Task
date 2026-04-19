@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TaskService } from '../../services/task.service';
-import { TaskStatus } from '../../models/task.model';
+import { Task } from '../../models/task.model';
 
 @Component({
   selector: 'app-task-form',
@@ -14,38 +14,46 @@ import { TaskStatus } from '../../models/task.model';
 })
 export class TaskFormComponent implements OnInit {
   taskForm!: FormGroup;
-  statuses: TaskStatus[] = [];
   isEditMode = false;
   taskId!: number;
+  statuses = ['Pending', 'In Progress', 'Completed'];
 
   constructor(
     private fb: FormBuilder,
     private taskService: TaskService,
-    private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.statuses = this.taskService.getStatuses();
-
     this.taskForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       status: ['Pending', Validators.required]
     });
 
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEditMode = true;
-      this.taskId = +id;
+    const idParam = this.route.snapshot.paramMap.get('id');
 
-      const existingTask = this.taskService.getTaskById(this.taskId);
-      if (existingTask) {
-        this.taskForm.patchValue({
-          title: existingTask.title,
-          status: existingTask.status
-        });
-      }
+    if (idParam) {
+      this.isEditMode = true;
+      this.taskId = +idParam;
+
+      this.taskService.getTaskById(this.taskId).subscribe(existingTask => {
+        if (existingTask) {
+          this.taskForm.patchValue({
+            title: existingTask.title,
+            status: existingTask.status
+          });
+        }
+      });
     }
+  }
+
+  get title() {
+    return this.taskForm.get('title');
+  }
+
+  get status() {
+    return this.taskForm.get('status');
   }
 
   onSubmit(): void {
@@ -57,26 +65,22 @@ export class TaskFormComponent implements OnInit {
     const formValue = this.taskForm.value;
 
     if (this.isEditMode) {
-      this.taskService.updateTask({
+      const updatedTask: Task = {
         id: this.taskId,
         title: formValue.title,
         status: formValue.status
+      };
+
+      this.taskService.updateTask(updatedTask).subscribe(() => {
+        this.router.navigate(['/']);
       });
     } else {
       this.taskService.addTask({
         title: formValue.title,
         status: formValue.status
+      }).subscribe(() => {
+        this.router.navigate(['/']);
       });
     }
-
-    this.router.navigate(['/']);
-  }
-
-  get title() {
-    return this.taskForm.get('title');
-  }
-
-  get status() {
-    return this.taskForm.get('status');
   }
 }
